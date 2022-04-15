@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   const form = document.querySelector(".add-toy-form")
+
   form.addEventListener("submit",(event)=>{
     event.preventDefault()
     const formData = {
@@ -73,7 +74,29 @@ document.addEventListener("DOMContentLoaded", () => {
       cardDiv.appendChild(button)
 
       document.querySelector("#toy-collection").appendChild(cardDiv)
+      button.addEventListener("click",updateLikes)
     })
   }
-  
+  function updateLikes(event){
+    let currentLikes = Number(event.target.previousSibling.textContent)
+      currentLikes +=1
+      let id = Number(event.target.id)
+      
+    const updateUrl = `http://localhost:3000/toys/${id}`
+    fetch(updateUrl, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+
+      },
+      body: JSON.stringify({
+        "likes": currentLikes
+      })
+    })
+    .then(res => res.json())
+    .then(() => {
+      event.target.previousSibling.innerText = currentLikes;
+    })
+  } 
 });
